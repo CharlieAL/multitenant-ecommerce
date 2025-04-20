@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Category } from '~/payload-types'
+import { CustomCategory } from '~/modules/categories/types'
 
 interface SubCategoryMenuProps {
   isOpen: boolean
@@ -7,7 +7,7 @@ interface SubCategoryMenuProps {
     top: number
     left: number
   }
-  category: Category
+  category: CustomCategory
 }
 
 export const SubCategoryMenu = ({
@@ -15,7 +15,11 @@ export const SubCategoryMenu = ({
   position,
   category
 }: SubCategoryMenuProps) => {
-  if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
+  if (
+    !isOpen ||
+    !category.subcategories ||
+    category.subcategories.length === 0
+  ) {
     return null
   }
   const backgroundColor = category.color || '#f5f5f5'
@@ -37,7 +41,7 @@ export const SubCategoryMenu = ({
           {category.subcategories.map((subCategory) => (
             <Link
               key={subCategory.slug}
-              href={'/'}
+              href={`/${category.slug}/${subCategory.slug}`}
               className='w-full text-left  p-4 hover:bg-black hover:text-white flex justify-between items-center underline font-medium'
             >
               {subCategory.name}
