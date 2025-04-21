@@ -1,26 +1,23 @@
-import { baseProcedure, createTRPCRouter } from '~/trpc/init'
-import configPromise from '@payload-config'
 import { Category } from '~/payload-types'
-import { getPayload } from 'payload'
+import { baseProcedure, createTRPCRouter } from '~/trpc/init'
+
 export const categoriesRouter = createTRPCRouter({
-  getMany: baseProcedure.query(async () => {
-    const payload = await getPayload({
-      config: configPromise
-    })
-    const data = await payload.find({
+  getMany: baseProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.find({
       collection: 'categories',
       depth: 1,
+      pagination: false,
       where: {
         parent: {
-          equals: false
+          exists: false
         }
-      }
+      },
+      sort: 'name'
     })
     const formattedData = data.docs.map((doc) => ({
       ...doc,
-      subcategories: (doc.subcategories?.docs ?? []).map((subdocs) => ({
-        // Because of 'depth: 1' we are confident doc will be a type of "Category"
-        ...(subdocs as Category),
+      subcategories: doc.subcategories?.docs?.map((doc) => ({
+        ...(doc as Category),
         subcategories: undefined
       }))
     }))

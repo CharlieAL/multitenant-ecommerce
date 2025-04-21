@@ -7,11 +7,11 @@ import { Button } from '~/components/ui/button'
 
 import { useDropdownPosition } from '~/hooks/use-dropdown-position'
 import { SubCategoryMenu } from './sub-category-menu'
-import { CustomCategory } from '~/modules/categories/types'
+import { CategoriesGetManyOutput } from '~/modules/categories/types'
 import Link from 'next/link'
 
 interface CategoryDropdownProps {
-  category: CustomCategory
+  category: CategoriesGetManyOutput[1]
   isActive?: boolean
   isNavigationHovered?: boolean
 }
@@ -63,9 +63,7 @@ export const CategoryDropdown = ({
               'border-primary bg-w shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[4px] -translate-y-[4px]'
           )}
         >
-          <Link href={`/${category.slug === 'all' ? '' : category.slug}`}>
-            {category.name}
-          </Link>
+          <Link href={`/${category.slug === 'all' ? '' : category.slug}`}>{category.name}</Link>
         </Button>
         {category.subcategories && category.subcategories.length > 0 && (
           <div
@@ -76,11 +74,7 @@ export const CategoryDropdown = ({
           />
         )}
       </div>
-      <SubCategoryMenu
-        category={category}
-        isOpen={isOpen}
-        position={dropdownPosition}
-      />
+      <SubCategoryMenu category={category} isOpen={isOpen} position={dropdownPosition} />
     </div>
   )
 }
