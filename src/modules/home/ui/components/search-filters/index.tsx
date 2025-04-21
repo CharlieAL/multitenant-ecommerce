@@ -41,7 +41,7 @@ const SearchFiltersSuspense = () => {
         backgroundColor: '#f5f5f5'
       }}
     >
-      <SearchInput disabled />
+      <SearchInput />
       <div className='hidden lg:block'>
         <Categories data={data ?? []} />
       </div>
