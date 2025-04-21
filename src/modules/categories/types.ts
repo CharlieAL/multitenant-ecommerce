@@ -1,5 +1,4 @@
-import { Category } from '~/payload-types'
+import { inferRouterOutputs } from '@trpc/server'
+import type { AppRouter } from '~/trpc/routers/_app'
 
-export type CustomCategory = Category & {
-  subcategories: Category[]
-}
+export type CategoriesGetManyOutput = inferRouterOutputs<AppRouter>['categories']['getMany']

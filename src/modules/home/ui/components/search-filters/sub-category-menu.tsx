@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CustomCategory } from '~/modules/categories/types'
+import { CategoriesGetManyOutput } from '~/modules/categories/types'
 
 interface SubCategoryMenuProps {
   isOpen: boolean
@@ -7,19 +7,11 @@ interface SubCategoryMenuProps {
     top: number
     left: number
   }
-  category: CustomCategory
+  category: CategoriesGetManyOutput[1]
 }
 
-export const SubCategoryMenu = ({
-  isOpen,
-  position,
-  category
-}: SubCategoryMenuProps) => {
-  if (
-    !isOpen ||
-    !category.subcategories ||
-    category.subcategories.length === 0
-  ) {
+export const SubCategoryMenu = ({ isOpen, position, category }: SubCategoryMenuProps) => {
+  if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
     return null
   }
   const backgroundColor = category.color || '#f5f5f5'
