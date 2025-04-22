@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Logo } from '~/components/logo'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
+import { useAuth } from '~/hooks/use-auth'
 
 interface NavbarItem {
   href: string
@@ -15,6 +16,7 @@ interface NavbarSidebarProps {
 }
 
 export const NavbarSidebar = ({ items, open, onOpenChange }: NavbarSidebarProps) => {
+  const { isAuthenticated } = useAuth()
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side='left' className='p-0 transition-none'>
@@ -37,20 +39,34 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: NavbarSidebarProps)
             </Link>
           ))}
           <div className='border-t'>
-            <Link
-              href={'/sign-in'}
-              className='w-full text-left p-4 hover:text-white hover:bg-black flex items-center font-medium text-base mt-0'
-              onClick={() => onOpenChange(false)}
-            >
-              Log in
-            </Link>
-            <Link
-              href={'/sign-up'}
-              className='w-full text-left p-4 hover:text-white hover:bg-black flex items-center font-medium text-base mt-0'
-              onClick={() => onOpenChange(false)}
-            >
-              Start selling
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href={'/admin'}
+                className='w-full text-left p-4 hover:text-white hover:bg-black flex items-center font-medium text-base mt-0'
+                onClick={() => onOpenChange(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  prefetch
+                  href={'/sign-in'}
+                  className='w-full text-left p-4 hover:text-white hover:bg-black flex items-center font-medium text-base mt-0'
+                  onClick={() => onOpenChange(false)}
+                >
+                  Log in
+                </Link>
+                <Link
+                  prefetch
+                  href={'/sign-up'}
+                  className='w-full text-left p-4 hover:text-white hover:bg-black flex items-center font-medium text-base mt-0'
+                  onClick={() => onOpenChange(false)}
+                >
+                  Start selling
+                </Link>
+              </>
+            )}
           </div>
         </ScrollArea>
       </SheetContent>
