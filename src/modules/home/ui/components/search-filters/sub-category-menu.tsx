@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CategoriesGetManyOutput } from '~/modules/categories/types'
+import { DEFAULT_BG_COLOR } from '~/modules/home/constants'
 
 interface SubCategoryMenuProps {
   isOpen: boolean
@@ -14,7 +15,7 @@ export const SubCategoryMenu = ({ isOpen, position, category }: SubCategoryMenuP
   if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
     return null
   }
-  const backgroundColor = category.color || '#f5f5f5'
+  const backgroundColor = category.color || DEFAULT_BG_COLOR
   return (
     <div
       style={{
@@ -32,6 +33,7 @@ export const SubCategoryMenu = ({ isOpen, position, category }: SubCategoryMenuP
         <div>
           {category.subcategories.map((subCategory) => (
             <Link
+              prefetch
               key={subCategory.slug}
               href={`/${category.slug}/${subCategory.slug}`}
               className='w-full text-left  p-4 hover:bg-black hover:text-white flex justify-between items-center underline font-medium'
