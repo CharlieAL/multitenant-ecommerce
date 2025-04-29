@@ -8,6 +8,6 @@ export const useAuth = () => {
   return {
     user: session.data?.user,
     isLoading: session.isLoading,
-    isAuthenticated: session.data?.user !== undefined
+    isAuthenticated: session.data?.user !== null && session.data?.user !== undefined
   }
 }

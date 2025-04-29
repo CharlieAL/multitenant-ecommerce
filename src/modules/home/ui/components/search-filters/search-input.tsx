@@ -14,7 +14,7 @@ interface SearchInputProps {
 
 export const SearchInput = ({ disabled }: SearchInputProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
   return (
     <div className='flex items-center gap-2 w-full'>
       <CategoriesSidebar isOpen={isOpen} onOpenChange={setIsOpen} />
@@ -29,7 +29,7 @@ export const SearchInput = ({ disabled }: SearchInputProps) => {
       >
         <ListFilterIcon />
       </Button>
-      {isAuthenticated && (
+      {!isLoading && isAuthenticated && (
         <Button variant={'elevated'} asChild>
           <Link href={'/library'}>
             <BookCheckIcon className='size-4' />

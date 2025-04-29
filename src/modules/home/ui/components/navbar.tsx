@@ -57,7 +57,7 @@ const navbarItems = [
 export const Navbar = () => {
   const path = usePathname()
 
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
   const [open, setOpen] = useState(false)
   return (
@@ -73,7 +73,7 @@ export const Navbar = () => {
           </NavbarItem>
         ))}
       </div>
-      {isAuthenticated ? (
+      {!isLoading && isAuthenticated ? (
         <div className='hidden lg:flex'>
           <Button
             asChild
