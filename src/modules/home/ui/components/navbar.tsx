@@ -62,7 +62,7 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false)
   return (
     <div className='h-20 flex border-b justify-between font-medium bg-white '>
-      <div className='flex items-center pl-6'>
+      <div className='flex items-center pl-4'>
         <Logo />
       </div>
       <NavbarSidebar items={navbarItems} open={open} onOpenChange={setOpen} />
@@ -103,9 +103,9 @@ export const Navbar = () => {
           </Button>
         </div>
       )}
-      <div className='lg:hidden flex items-center justify-center pr-5'>
+      <div className='lg:hidden flex items-center justify-center pr-4'>
         <Button
-          className='bg-transparent hover:bg-transparent rounded-full size-12 border-primary  px-3.5 text-lg'
+          className='bg-transparent hover:bg-transparent rounded-full  border-primary  px-3.5 text-lg'
           variant={'ghost'}
           onClick={() => setOpen(!open)}
         >
