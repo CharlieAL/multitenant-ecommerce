@@ -27,12 +27,12 @@ export const SearchInput = ({ disabled }: SearchInputProps) => {
         className='size-12 shrink-0 flex lg:hidden'
         onClick={() => setIsOpen(!isOpen)}
       >
-        <ListFilterIcon />
+        <ListFilterIcon className='size-5' />
       </Button>
       {!isLoading && isAuthenticated && (
         <Button variant={'elevated'} asChild>
           <Link href={'/library'}>
-            <BookCheckIcon className='size-4' />
+            <BookCheckIcon className='size-5' />
             <span className='hidden sm:block'>Library</span>
           </Link>
         </Button>
