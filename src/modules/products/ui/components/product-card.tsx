@@ -23,7 +23,7 @@ export const ProductCard = (props: ProductCardProps) => {
             alt={props.name}
             src={props.imageUrl || PLACEHOLDER_IMAGE}
             fill
-            objectFit='cover'
+            className='object-cover'
           />
         </div>
         <div className='p-4 border-y flex flex-col gap-3 flex-1'>
