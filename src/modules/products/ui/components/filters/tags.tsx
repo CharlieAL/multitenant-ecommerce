@@ -38,8 +38,9 @@ export const TagsFilter = ({ value, onChange }: TagsFilterProps) => {
         </div>
       ) : (
         <div>
-          {data?.pages.map((page) =>
-            page.docs.map((tag) => (
+          {data?.pages
+            .flatMap((page) => page.docs)
+            .map((tag) => (
               <div
                 key={tag.id}
                 className='flex items-center justify-between cursor-pointer py-1'
@@ -52,8 +53,7 @@ export const TagsFilter = ({ value, onChange }: TagsFilterProps) => {
                   onCheckedChange={() => onClick(tag.name)}
                 />
               </div>
-            ))
-          )}
+            ))}
         </div>
       )}
       {hasNextPage && !isFetchingNextPage && (
