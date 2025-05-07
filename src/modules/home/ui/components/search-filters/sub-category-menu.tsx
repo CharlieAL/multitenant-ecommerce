@@ -4,26 +4,16 @@ import { DEFAULT_BG_COLOR } from '~/modules/home/constants'
 
 interface SubCategoryMenuProps {
   isOpen: boolean
-  position: {
-    top: number
-    left: number
-  }
   category: CategoriesGetManyOutput[1]
 }
 
-export const SubCategoryMenu = ({ isOpen, position, category }: SubCategoryMenuProps) => {
+export const SubCategoryMenu = ({ isOpen, category }: SubCategoryMenuProps) => {
   if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
     return null
   }
   const backgroundColor = category.color || DEFAULT_BG_COLOR
   return (
-    <div
-      style={{
-        top: position.top,
-        left: position.left
-      }}
-      className='fixed z-100'
-    >
+    <div className='absolute top-[100%] left-0 z-100'>
       {/* invisible bridge to maintain hover */}
       <div className='h-3 w-60 bg-transparent' />
       <div

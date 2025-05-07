@@ -35,6 +35,7 @@ export const CategoriesSidebar = ({ isOpen, onOpenChange }: CategoriesSidebarPro
     if (category.subcategories && category.subcategories.length > 0) {
       setParentCategories(category.subcategories as CategoriesGetManyOutput)
       setSelectedCategory(category)
+      router.push(`/${category.slug}`)
     } else {
       // This is a leaf category (no subcategories)
       if (parentCategories && selectedCategory) {
