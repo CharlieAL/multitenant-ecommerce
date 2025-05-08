@@ -60,7 +60,9 @@ export const ProductList = ({ category }: ProductListProps) => {
             onClick={() => fetchNextPage()}
             className='font-medium disabled:opacity-50 text-base bg-white'
             variant={'elevated'}
-          ></Button>
+          >
+            Load more
+          </Button>
         )}
       </div>
     </>
