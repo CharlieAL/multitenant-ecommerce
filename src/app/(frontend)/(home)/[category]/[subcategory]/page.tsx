@@ -18,8 +18,8 @@ const Subcategory = async ({ params, searchParams }: SubcategoryProps) => {
   const filters = await loadFilters(searchParams)
 
   const queryClient = getQueryClient()
-  void queryClient.prefetchQuery(
-    trpc.products.getMany.queryOptions({ category: subcategory, ...filters })
+  void queryClient.prefetchInfiniteQuery(
+    trpc.products.getMany.infiniteQueryOptions({ category: subcategory, ...filters })
   )
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
