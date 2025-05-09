@@ -115,7 +115,7 @@ export const SignUpView = () => {
                 <FormItem>
                   <FormLabel className='text-base'>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type='password' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
