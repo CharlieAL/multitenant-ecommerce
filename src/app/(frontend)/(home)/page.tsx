@@ -1,12 +1,24 @@
-// its a just testing file for trpc
+import { getQueryClient, trpc } from '~/trpc/server'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 
-const HomePage = () => {
-  return (
-    <main className='container mx-auto py-8'>
-      <h1 className='text-3xl font-bold mb-4'>Welcome to Funroad</h1>
-      <p>Hello world! Your ecommerce journey starts here.</p>
-    </main>
-  )
+import { loadFilters } from '~/modules/products/search-params'
+
+import type { SearchParams } from 'nuqs/server'
+import { ProductsView } from '~/modules/products/ui/views/products-view'
+
+interface CategoryProps {
+  searchParams: Promise<SearchParams>
 }
 
+const HomePage = async ({ searchParams }: CategoryProps) => {
+  const filters = await loadFilters(searchParams)
+
+  const queryClient = getQueryClient()
+  void queryClient.prefetchInfiniteQuery(trpc.products.getMany.infiniteQueryOptions({ ...filters }))
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ProductsView />
+    </HydrationBoundary>
+  )
+}
 export default HomePage
