@@ -29,12 +29,22 @@ export const authRouter = createTRPCRouter({
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Username already taken' })
     }
 
+    const tenant = await ctx.db.create({
+      collection: 'tenants',
+      data: {
+        name: input.username,
+        slug: input.username,
+        stripeAccountId: 'test'
+      }
+    })
+
     await ctx.db.create({
       collection: 'users',
       data: {
         email: input.email,
         username: input.username,
-        password: input.password //this will be hashed by Payload internally
+        password: input.password, //this will be hashed by Payload internally
+        tenants: [{ tenant: tenant.id }]
       }
     })
 

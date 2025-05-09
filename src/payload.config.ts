@@ -1,17 +1,21 @@
 // storage-adapter-import-placeholder
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
-import { Categories } from './collections/Categories'
-import { Products } from './collections/Products'
+import { fileURLToPath } from 'url'
+import { buildConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
+
 import { Tags } from './collections/Tags'
+import { Media } from './collections/Media'
+import { Users } from './collections/Users'
+import { Tenants } from './collections/Tenants'
+import { Products } from './collections/Products'
+import { Categories } from './collections/Categories'
+
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname)
     }
   },
-  collections: [Users, Media, Categories, Products, Tags],
+  collections: [Users, Media, Categories, Products, Tags, Tenants],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -34,7 +38,16 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    payloadCloudPlugin()
+    payloadCloudPlugin(),
+    multiTenantPlugin({
+      collections: {
+        products: {}
+      },
+      tenantsArrayField: {
+        includeDefaultField: true
+      },
+      userHasAccessToAllTenants: (user) => Boolean(user?.roles?.includes('super-admin'))
+    })
     // storage-adapter-placeholder
   ]
 })
