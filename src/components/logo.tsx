@@ -7,12 +7,14 @@ const poppins = Poppins({
   weight: ['700']
 })
 
-export const Logo = () => {
+interface LogoProps {
+  className?: string
+}
+
+export const Logo = ({ className }: LogoProps) => {
   return (
     <Link href={'/'} className=''>
-      <span className={cn('text-5xl font-semibold', poppins.className)}>
-        funroad
-      </span>
+      <span className={cn('text-5xl font-semibold', poppins.className, className)}>funroad</span>
     </Link>
   )
 }
