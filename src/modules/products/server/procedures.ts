@@ -6,6 +6,23 @@ import { sortValues } from '../search-params'
 import { DEFAULT_PRODUCTS_LIMIT } from '~/constants'
 
 export const productsRouter = createTRPCRouter({
+  getOne: baseProcedure
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db.findByID({
+        collection: 'products',
+        id: input.id
+      })
+      return {
+        ...data,
+        image: data.image as Media | null,
+        tenant: data.tenant as Tenant & { image: Media | null }
+      }
+    }),
   getMany: baseProcedure
     .input(
       z.object({

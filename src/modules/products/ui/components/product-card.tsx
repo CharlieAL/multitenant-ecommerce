@@ -3,7 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { PLACEHOLDER_IMAGE } from '~/constants'
-import { genereteTenantURL } from '~/lib/utils'
+import { formatCurrency, genereteTenantURL } from '~/lib/utils'
+
+// TODO: add real ratings
 
 interface ProductCardProps {
   id: string
@@ -23,8 +25,10 @@ export const ProductCard = (props: ProductCardProps) => {
     e.stopPropagation()
     router.push(genereteTenantURL(props.tenantSlug))
   }
+
+  const priceFormat = formatCurrency(props.price)
   return (
-    <Link href={`/products/${props.id}`}>
+    <Link href={`${genereteTenantURL(props.tenantSlug)}/products/${props.id}`}>
       <div className='hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[4px] hover:-translate-y-[4px] transition-all  border rounded-md bg-white overflow-hidden h-full flex flex-col'>
         <div className='relative aspect-square'>
           <Image
@@ -36,7 +40,6 @@ export const ProductCard = (props: ProductCardProps) => {
         </div>
         <div className='p-4 border-y flex flex-col gap-3 flex-1'>
           <h2 className='text-lg font-medium line-clamp-4'>{props.name}</h2>
-          {/* TODO: redirect to user shop */}
           <div className='flex items-center gap-2 ' onClick={handleUserClick}>
             {props.tenantImageUrl && (
               <Image
@@ -60,13 +63,7 @@ export const ProductCard = (props: ProductCardProps) => {
         </div>
         <div className='p-4'>
           <div className='relative px-2 py-1 border bg-pink-400 w-fit'>
-            <p className='text-sm font-medium'>
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 1
-              }).format(props.price)}
-            </p>
+            <p className='text-sm font-medium'>{priceFormat}</p>
           </div>
         </div>
       </div>
