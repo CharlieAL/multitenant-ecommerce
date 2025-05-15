@@ -4,7 +4,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { loadFilters } from '~/modules/products/search-params'
 
 import type { SearchParams } from 'nuqs/server'
-import { ProductsView } from '~/modules/products/ui/views/products-view'
+import { ProductsView } from '~/modules/products/ui/views/products-list-view'
 
 interface CategoryProps {
   searchParams: Promise<SearchParams>

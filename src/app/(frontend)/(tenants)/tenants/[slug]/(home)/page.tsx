@@ -3,7 +3,7 @@ import { getQueryClient, trpc } from '~/trpc/server'
 import { SearchParams } from 'nuqs'
 import { loadFilters } from '~/modules/products/search-params'
 
-import { ProductsView } from '~/modules/products/ui/views/products-view'
+import { ProductsView } from '~/modules/products/ui/views/products-list-view'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 
 interface TenantProps {
