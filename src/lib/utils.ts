@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function genereteTenantURL(tenantSlug: string) {
-  return `tenants/${tenantSlug}`
+  return `/tenants/${tenantSlug}`
 }
 
 export function formatCurrency(price: number | string) {
