@@ -2,6 +2,8 @@
 
 // TODO: add real ratings
 
+import dynamic from 'next/dynamic'
+
 import { useTRPC } from '~/trpc/client'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
@@ -13,6 +15,16 @@ import { Button } from '~/components/ui/button'
 import { LinkIcon, StarIcon } from 'lucide-react'
 import { Fragment } from 'react'
 import { Progress } from '~/components/ui/progress'
+// import { CartButton } from '~/components/cart-button'
+
+const CartButton = dynamic(() => import('~/components/cart-button').then((mod) => mod.CartButton), {
+  ssr: false,
+  loading: () => (
+    <Button disabled variant={'elevated'} className='flex-1 bg-pink-400'>
+      ...
+    </Button>
+  )
+})
 
 interface ProductViewProps {
   productId: string
@@ -22,8 +34,8 @@ interface ProductViewProps {
 export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
   const trpc = useTRPC()
   const { data } = useSuspenseQuery(trpc.products.getOne.queryOptions({ id: productId }))
-
   const priceFormat = formatCurrency(data.price)
+
   return (
     <div className='px-4 lg:px-12 py-10'>
       <div className='border rounded-sm bg-white overflow-hidden'>
@@ -87,9 +99,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className='border-t lg:border-t-0 lg:border-l h-full'>
               <div className='flex flex-col gap-4 p-6 border-b'>
                 <div className='flex flex-wrap items-center gap-2'>
-                  <Button variant={'elevated'} className='flex-1 bg-pink-400'>
-                    Add to cart
-                  </Button>
+                  <CartButton tenantSlug={tenantSlug} productId={productId} />
                   <Button
                     className='size-12'
                     variant={'elevated'}
