@@ -46,7 +46,7 @@ export const Navbar = ({ slug }: NavbarProps) => {
           )}
           <p className='text-xl'>{data.name}</p>
         </Link>
-        <CheckoutButton tanantSlug={slug} />
+        <CheckoutButton tanantSlug={slug} hideIfEmpty />
       </div>
     </nav>
   )
