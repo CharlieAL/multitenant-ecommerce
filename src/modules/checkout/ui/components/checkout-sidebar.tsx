@@ -5,16 +5,16 @@ import { formatCurrency } from '~/lib/utils'
 
 interface CheckoutSidebarProps {
   totalPrice: number
-  onCheckout: () => void
+  onPurchase: () => void
   isCanceled: boolean
-  isPending: boolean
+  disabled: boolean
 }
 
 export const CheckoutSidebar = ({
   totalPrice,
-  onCheckout,
+  onPurchase,
   isCanceled,
-  isPending
+  disabled
 }: CheckoutSidebarProps) => {
   return (
     <div className='border rounded-md overflow-hidden bg-white flex flex-col'>
@@ -26,8 +26,8 @@ export const CheckoutSidebar = ({
         <Button
           className='text-base w-full text-white bg-primary hover:bg-pink-400 hover:text-primary'
           variant={'elevated'}
-          disabled={isPending}
-          onClick={onCheckout}
+          disabled={disabled}
+          onClick={onPurchase}
           size={'lg'}
         >
           Checkout
