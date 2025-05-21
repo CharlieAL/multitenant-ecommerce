@@ -1,9 +1,13 @@
 import { z } from 'zod'
 import type { Sort, Where } from 'payload'
-import { baseProcedure, createTRPCRouter } from '~/trpc/init'
-import type { Category, Media, Tenant } from '~/payload-types'
+
+import { headers as getHeaders } from 'next/headers'
+
 import { sortValues } from '../search-params'
 import { DEFAULT_PRODUCTS_LIMIT } from '~/constants'
+
+import { baseProcedure, createTRPCRouter } from '~/trpc/init'
+import type { Category, Media, Tenant } from '~/payload-types'
 
 export const productsRouter = createTRPCRouter({
   getOne: baseProcedure
@@ -13,12 +17,41 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const headers = await getHeaders()
+      const session = await ctx.db.auth({ headers })
+
       const data = await ctx.db.findByID({
         collection: 'products',
         id: input.id
       })
+
+      let isPurchased = false
+      if (session.user) {
+        const orderData = await ctx.db.find({
+          collection: 'orders',
+          pagination: false,
+          limit: 1,
+          where: {
+            and: [
+              {
+                product: {
+                  equals: data.id
+                }
+              },
+              {
+                user: {
+                  equals: session.user.id
+                }
+              }
+            ]
+          }
+        })
+        isPurchased = !!orderData.docs[0]
+      }
+
       return {
         ...data,
+        isPurchased,
         image: data.image as Media | null,
         tenant: data.tenant as Tenant & { image: Media | null }
       }
@@ -82,9 +115,9 @@ export const productsRouter = createTRPCRouter({
           }
         })
 
-        const formattedData = categoriesData.docs.map((doc) => ({
+        const formattedData = categoriesData.docs.map(doc => ({
           ...doc,
-          subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
+          subcategories: (doc.subcategories?.docs ?? []).map(doc => ({
             ...(doc as Category),
             subcategories: undefined
           }))
@@ -94,7 +127,7 @@ export const productsRouter = createTRPCRouter({
 
         if (parentCategory) {
           subcategoriesSlugs.push(
-            ...parentCategory.subcategories.map((subcategory) => subcategory.slug)
+            ...parentCategory.subcategories.map(subcategory => subcategory.slug)
           )
           where['category.slug'] = {
             in: [parentCategory.slug, ...subcategoriesSlugs]
@@ -119,7 +152,7 @@ export const productsRouter = createTRPCRouter({
 
       return {
         ...data,
-        docs: data.docs.map((doc) => ({
+        docs: data.docs.map(doc => ({
           ...doc,
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null }

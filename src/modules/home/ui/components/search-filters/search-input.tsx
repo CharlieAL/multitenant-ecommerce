@@ -25,13 +25,12 @@ export const SearchInput = ({ disabled }: SearchInputProps) => {
       <Button
         variant={'elevated'}
         className='size-12 shrink-0 flex lg:hidden'
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         <ListFilterIcon className='size-5' />
       </Button>
       {!isLoading && isAuthenticated && (
         <Button variant={'elevated'} asChild>
-          <Link href={'/library'}>
+          <Link prefetch href={'/library'}>
             <BookCheckIcon className='size-5' />
             <span className='hidden sm:block'>Library</span>
           </Link>

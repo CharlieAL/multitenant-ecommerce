@@ -1,5 +1,8 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import {
+  persist,
+  createJSONStorage
+} from 'zustand/middleware'
 
 interface TenantCart {
   productsIds: string[]
@@ -7,23 +10,32 @@ interface TenantCart {
 
 interface CartState {
   tenantCarts: Record<string, TenantCart>
-  add: (tenantSlug: string, productId: string) => void
-  remove: (tenantSlug: string, productId: string) => void
+  add: (
+    tenantSlug: string,
+    productId: string
+  ) => void
+  remove: (
+    tenantSlug: string,
+    productId: string
+  ) => void
   clear: (tenantSlug: string) => void
   clearAllCarts: () => void
-  getCartByTenant: (tenantSlug: string) => string[]
 }
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tenantCarts: {},
       add: (tenantSlug, productId) =>
         set((state) => ({
           tenantCarts: {
             ...state.tenantCarts,
             [tenantSlug]: {
-              productsIds: [...(state.tenantCarts[tenantSlug]?.productsIds || []), productId]
+              productsIds: [
+                ...(state.tenantCarts[tenantSlug]
+                  ?.productsIds || []),
+                productId
+              ]
             }
           }
         })),
@@ -33,7 +45,11 @@ export const useCartStore = create<CartState>()(
             ...state.tenantCarts,
             [tenantSlug]: {
               productsIds:
-                state.tenantCarts[tenantSlug]?.productsIds.filter((id) => id !== productId) || []
+                state.tenantCarts[
+                  tenantSlug
+                ]?.productsIds.filter(
+                  (id) => id !== productId
+                ) || []
             }
           }
         })),
@@ -46,12 +62,14 @@ export const useCartStore = create<CartState>()(
             }
           }
         })),
-      clearAllCarts: () => set({ tenantCarts: {} }),
-      getCartByTenant: (tenantSlug) => get().tenantCarts[tenantSlug]?.productsIds || []
+      clearAllCarts: () =>
+        set({ tenantCarts: {} })
     }),
     {
       name: 'funroad-cart-storage',
-      storage: createJSONStorage(() => localStorage)
+      storage: createJSONStorage(
+        () => localStorage
+      )
     }
   )
 )

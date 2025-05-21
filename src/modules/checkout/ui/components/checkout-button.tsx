@@ -12,15 +12,15 @@ interface CheckoutButtonProps {
 }
 
 export const CheckoutButton = ({ tanantSlug, className, hideIfEmpty }: CheckoutButtonProps) => {
-  const cart = useCart(tanantSlug)
+  const { totalProducts } = useCart(tanantSlug)
 
-  if (hideIfEmpty && cart.totalProducts === 0) return null
+  if (hideIfEmpty && totalProducts === 0) return null
 
   return (
     <Button asChild variant={'elevated'} className={cn('bg-white', className)}>
       <Link href={`${genereteTenantURL(tanantSlug)}/checkout`}>
         <ShoppingCartIcon />
-        {cart.totalProducts || ''}
+        {totalProducts || ''}
       </Link>
     </Button>
   )
