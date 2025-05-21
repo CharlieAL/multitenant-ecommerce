@@ -17,7 +17,7 @@ import { Fragment } from 'react'
 import { Progress } from '~/components/ui/progress'
 // import { CartButton } from '~/components/cart-button'
 
-const CartButton = dynamic(() => import('~/components/cart-button').then((mod) => mod.CartButton), {
+const CartButton = dynamic(() => import('~/components/cart-button').then(mod => mod.CartButton), {
   ssr: false,
   loading: () => (
     <Button disabled variant={'elevated'} className='flex-1 bg-pink-400'>
@@ -61,8 +61,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               <div className='px-6 py-4 flex items-center justify-center lg:border-r'>
                 <Link
                   href={genereteTenantURL(tenantSlug)}
-                  className='flex items-center gap-2 group'
-                >
+                  className='flex items-center gap-2 group'>
                   {data.tenant.image?.url && (
                     <Image
                       src={data.tenant.image?.url}
@@ -99,13 +98,17 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className='border-t lg:border-t-0 lg:border-l h-full'>
               <div className='flex flex-col gap-4 p-6 border-b'>
                 <div className='flex flex-wrap items-center gap-2'>
-                  <CartButton tenantSlug={tenantSlug} productId={productId} />
+                  <CartButton
+                    isPurchased={data.isPurchased}
+                    tenantSlug={tenantSlug}
+                    productId={productId}
+                  />
+
                   <Button
                     className='size-12'
                     variant={'elevated'}
                     onClick={() => {}}
-                    disabled={false}
-                  >
+                    disabled={false}>
                     <LinkIcon />
                   </Button>
                 </div>
@@ -125,7 +128,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                   </div>
                 </div>
                 <div className='grid grid-cols-[auto_1fr_auto] gap-3 mt-3'>
-                  {[5, 4, 3, 2, 1].map((stars) => (
+                  {[5, 4, 3, 2, 1].map(stars => (
                     <Fragment key={stars}>
                       <div className='font-medium'>
                         {stars} {stars === 1 ? 'star' : 'stars'}

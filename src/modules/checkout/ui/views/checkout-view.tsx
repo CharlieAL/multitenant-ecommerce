@@ -6,7 +6,10 @@ import { useCart } from '../../hooks/use-cart'
 
 import { genereteTenantURL } from '~/lib/utils'
 import { CheckoutItem, CheckoutItemSkeleton } from '../components/checkout-item'
-import { CheckoutSidebar, CheckoutSidebarSkeleton } from '../components/checkout-sidebar'
+import {
+  CheckoutSidebar,
+  CheckoutSidebarSkeleton
+} from '../components/checkout-sidebar'
 import { InboxIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
@@ -49,10 +52,9 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
 
   useEffect(() => {
     if (states.success) {
-      setStates({ success: false, cancel: false })
+      console.log('triggered')
+
       clearCart()
-      toast.success('Purchase successful!')
-      router.push('/products')
     }
   }, [states.success, clearCart, router, setStates])
 
