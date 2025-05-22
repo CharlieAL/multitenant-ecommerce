@@ -22,10 +22,11 @@ export const ProductList = ({ category, tenantSlug, narrowView }: ProductListPro
       {
         category,
         ...filters,
-        tenantSlug
+        tenantSlug,
+        limit: DEFAULT_PRODUCTS_LIMIT
       },
       {
-        getNextPageParam: (lastPage) => {
+        getNextPageParam: lastPage => {
           return lastPage.docs?.length > 0 ? lastPage.nextPage : undefined
         }
       }
@@ -45,11 +46,10 @@ export const ProductList = ({ category, tenantSlug, narrowView }: ProductListPro
         className={cn(
           'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4',
           narrowView && 'lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3'
-        )}
-      >
+        )}>
         {data?.pages
-          .flatMap((page) => page.docs)
-          .map((product) => (
+          .flatMap(page => page.docs)
+          .map(product => (
             <ProductCard
               key={product.id}
               id={product.id}
@@ -69,8 +69,7 @@ export const ProductList = ({ category, tenantSlug, narrowView }: ProductListPro
             disabled={isFetchingNextPage}
             onClick={() => fetchNextPage()}
             className='font-medium disabled:opacity-50 text-base bg-white'
-            variant={'elevated'}
-          >
+            variant={'elevated'}>
             Load more
           </Button>
         )}
@@ -87,8 +86,7 @@ export const ProductListSkeleton = ({ narrowView }: ProductListSkeletonProps) =>
       className={cn(
         'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4',
         narrowView && 'lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3'
-      )}
-    >
+      )}>
       {Array.from({ length: DEFAULT_PRODUCTS_LIMIT }).map((_, i) => {
         return <ProductCardSkeleton key={i} />
       })}

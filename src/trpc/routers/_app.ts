@@ -7,10 +7,12 @@ import { productsRouter } from '~/modules/products/server/procedures'
 import { categoriesRouter } from '~/modules/categories/server/procedures'
 
 import { createTRPCRouter } from '../init'
+import { reviewsRouter } from '~/modules/reviews/server/procedures'
 
 export const appRouter = createTRPCRouter({
   tags: tagsRouter,
   auth: authRouter,
+  reviews: reviewsRouter,
   library: libraryRouter,
   tenants: tenantsRouter,
   checkout: checkoutRouter,

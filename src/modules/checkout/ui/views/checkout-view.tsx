@@ -1,15 +1,12 @@
 'use client'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTRPC } from '~/trpc/client'
 import { useCart } from '../../hooks/use-cart'
 
 import { genereteTenantURL } from '~/lib/utils'
 import { CheckoutItem, CheckoutItemSkeleton } from '../components/checkout-item'
-import {
-  CheckoutSidebar,
-  CheckoutSidebarSkeleton
-} from '../components/checkout-sidebar'
+import { CheckoutSidebar, CheckoutSidebarSkeleton } from '../components/checkout-sidebar'
 import { InboxIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
@@ -28,6 +25,8 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
   const { productsIds, clearCart, remove } = useCart(tenantSlug)
 
   const trpc = useTRPC()
+  const queryClient = useQueryClient()
+
   const { data, isLoading, error } = useQuery(
     trpc.checkout.getProducts.queryOptions({ ids: productsIds })
   )
@@ -37,10 +36,10 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       onMutate: () => {
         setStates({ success: false, cancel: false })
       },
-      onSuccess: (data) => {
+      onSuccess: data => {
         window.location.href = data.url
       },
-      onError: (error) => {
+      onError: error => {
         if (error.data?.code === 'UNAUTHORIZED') {
           // TODO: Modify when subdomain enabled
           router.push('/sign-in')
@@ -52,11 +51,12 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
 
   useEffect(() => {
     if (states.success) {
-      console.log('triggered')
-
+      setStates({ success: false, cancel: false })
       clearCart()
+      queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter())
+      router.push('/library')
     }
-  }, [states.success, clearCart, router, setStates])
+  }, [states.success, clearCart, router, setStates, queryClient, trpc.library.getMany])
 
   useEffect(() => {
     if (error?.data?.code === 'NOT_FOUND') {
@@ -100,7 +100,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       <div className='grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-16'>
         <div className='lg:col-span-4'>
           <div className='border rounded-md overflow-hidden bg-white divide-y'>
-            {data?.docs.map((product) => (
+            {data?.docs.map(product => (
               <CheckoutItem
                 key={product.id}
                 imageUrl={product.image?.url}
