@@ -1,0 +1,6 @@
+import { ClientUser } from 'payload'
+import { User } from '~/payload-types'
+
+export const isSuperAdmin = (user: ClientUser | User | null) => {
+  return Boolean(user?.roles?.includes('super-admin'))
+}
