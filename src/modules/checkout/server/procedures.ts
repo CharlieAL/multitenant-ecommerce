@@ -65,7 +65,7 @@ export const checkoutRouter = createTRPCRouter({
       // throw error if stripe details not submitted
 
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = products.docs.map(
-        (product) => ({
+        product => ({
           quantity: 1,
           price_data: {
             unit_amount: product.price * 100, // stripe handles in cents
@@ -134,7 +134,7 @@ export const checkoutRouter = createTRPCRouter({
       return {
         ...data,
         totalPrice: data.docs.reduce((acc, doc) => acc + doc.price, 0),
-        docs: data.docs.map((doc) => ({
+        docs: data.docs.map(doc => ({
           ...doc,
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null }

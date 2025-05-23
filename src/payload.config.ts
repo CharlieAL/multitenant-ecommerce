@@ -18,6 +18,7 @@ import { Products } from './collections/Products'
 import { Categories } from './collections/Categories'
 
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
+import { isSuperAdmin } from './lib/access'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -48,7 +49,7 @@ export default buildConfig({
       tenantsArrayField: {
         includeDefaultField: true
       },
-      userHasAccessToAllTenants: user => Boolean(user?.roles?.includes('super-admin'))
+      userHasAccessToAllTenants: user => isSuperAdmin(user)
     })
     // storage-adapter-placeholder
   ]
