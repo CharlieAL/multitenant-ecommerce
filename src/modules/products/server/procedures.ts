@@ -8,6 +8,7 @@ import { DEFAULT_PRODUCTS_LIMIT } from '~/constants'
 
 import { baseProcedure, createTRPCRouter } from '~/trpc/init'
 import type { Category, Media, Tenant } from '~/payload-types'
+import { TRPCError } from '@trpc/server'
 
 export const productsRouter = createTRPCRouter({
   getOne: baseProcedure
@@ -168,13 +169,17 @@ export const productsRouter = createTRPCRouter({
         const subcategoriesSlugs = []
         const parentCategory = formattedData[0]
 
-        if (parentCategory) {
-          subcategoriesSlugs.push(
-            ...parentCategory.subcategories.map(subcategory => subcategory.slug)
-          )
-          where['category.slug'] = {
-            in: [parentCategory.slug, ...subcategoriesSlugs]
-          }
+        if (!parentCategory) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Category not found'
+          })
+        }
+        subcategoriesSlugs.push(
+          ...parentCategory.subcategories.map(subcategory => subcategory.slug)
+        )
+        where['category.slug'] = {
+          in: [parentCategory.slug, ...subcategoriesSlugs]
         }
       }
 

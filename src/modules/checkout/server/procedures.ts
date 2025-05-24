@@ -7,8 +7,59 @@ import { TRPCError } from '@trpc/server'
 import Stripe from 'stripe'
 import { CheckoutMetaData, ProductMetaData } from '../types'
 import { stripe } from '~/lib/stripe'
+import { PLATFORM_FEE_PERCENTAGE } from '~/constants'
 
 export const checkoutRouter = createTRPCRouter({
+  verify: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.findByID({
+      collection: 'users',
+      id: ctx.session.user.id,
+      depth: 0
+    })
+    if (!user) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'User not found'
+      })
+    }
+    const tenantId = user.tenants?.[0]?.tenant as string // this is ID becouse of depth 0
+    const tenantData = await ctx.db.find({
+      collection: 'tenants',
+      pagination: false,
+      limit: 1,
+      where: {
+        id: {
+          equals: tenantId
+        }
+      }
+    })
+    const tenant = tenantData.docs[0] as Tenant
+
+    if (!tenant) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Tenant not found'
+      })
+    }
+
+    const accountLink = await stripe.accountLinks.create({
+      account: tenant.stripeAccountId,
+      refresh_url: `${process.env.NEXT_PUBLIC_APP_URL!}/admin`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL!}/admin`,
+      type: 'account_onboarding'
+    })
+
+    if (!accountLink.url) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to create account link'
+      })
+    }
+
+    return {
+      url: accountLink.url
+    }
+  }),
   purchase: protectedProcedure
     .input(
       z.object({
@@ -62,10 +113,15 @@ export const checkoutRouter = createTRPCRouter({
         })
       }
 
-      // throw error if stripe details not submitted
+      if (!tenant.stripeDetailsSubmitted) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Tenant not allowed to sell products'
+        })
+      }
 
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = products.docs.map(
-        product => ({
+        (product) => ({
           quantity: 1,
           price_data: {
             unit_amount: product.price * 100, // stripe handles in cents
@@ -83,19 +139,31 @@ export const checkoutRouter = createTRPCRouter({
         })
       )
 
-      const checkout = await stripe.checkout.sessions.create({
-        customer_email: ctx.session.user.email,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
-        mode: 'payment',
-        line_items: lineItems,
-        invoice_creation: {
-          enabled: true
+      const totalAmount = products.docs.reduce((acc, doc) => acc + doc.price * 100, 0)
+
+      const platformFeeAmount = Math.round((totalAmount * PLATFORM_FEE_PERCENTAGE) / 100)
+
+      const checkout = await stripe.checkout.sessions.create(
+        {
+          customer_email: ctx.session.user.email,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
+          mode: 'payment',
+          line_items: lineItems,
+          invoice_creation: {
+            enabled: true
+          },
+          metadata: {
+            userId: ctx.session.user.id
+          } as CheckoutMetaData,
+          payment_intent_data: {
+            application_fee_amount: platformFeeAmount
+          }
         },
-        metadata: {
-          userId: ctx.session.user.id
-        } as CheckoutMetaData
-      })
+        {
+          stripeAccount: tenant.stripeAccountId
+        }
+      )
 
       if (!checkout.url) {
         throw new TRPCError({
@@ -134,7 +202,7 @@ export const checkoutRouter = createTRPCRouter({
       return {
         ...data,
         totalPrice: data.docs.reduce((acc, doc) => acc + doc.price, 0),
-        docs: data.docs.map(doc => ({
+        docs: data.docs.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null }

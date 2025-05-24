@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   console.log('✅ Webhook received: ', event.type)
 
-  const permittedEvent: string[] = ['checkout.session.completed']
+  const permittedEvent: string[] = ['checkout.session.completed', 'account.updated']
 
   const payload = await getPayload({
     config
@@ -50,9 +50,15 @@ export async function POST(req: Request) {
             throw new Error('Webhook error: User not found')
           }
 
-          const expandedSession = await stripe.checkout.sessions.retrieve(data.id, {
-            expand: ['line_items.data.price.product']
-          })
+          const expandedSession = await stripe.checkout.sessions.retrieve(
+            data.id,
+            {
+              expand: ['line_items.data.price.product']
+            },
+            {
+              stripeAccount: event.account
+            }
+          )
 
           if (!expandedSession.line_items?.data || !expandedSession.line_items?.data.length) {
             throw new Error('Webhook error: Line items not found')
@@ -64,12 +70,27 @@ export async function POST(req: Request) {
               collection: 'orders',
               data: {
                 stripeCheckoutSessionId: data.id,
+                stripeAccountId: event.account,
                 user: user.id,
                 product: item.price.product.metadata.id,
                 name: item.price.product.name
               }
             })
           }
+          break
+        case 'account.updated':
+          data = event.data.object as Stripe.Account
+          await payload.update({
+            collection: 'tenants',
+            where: {
+              stripeAccountId: {
+                equals: data.id
+              }
+            },
+            data: {
+              stripeDetailsSubmitted: data.details_submitted
+            }
+          })
           break
 
         default:
