@@ -37,7 +37,7 @@ export const SignUpView = () => {
         await queryClient.invalidateQueries(trpc.auth.session.queryFilter())
         router.push('/')
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error.message)
         console.log(error.message)
       }
@@ -85,7 +85,7 @@ export const SignUpView = () => {
                 <FormItem>
                   <FormLabel className='text-base'>Username</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type='name' />
                   </FormControl>
                   <FormDescription className={cn('hidden', showPreview && 'block')}>
                     Your store will be available at&nbsp;
@@ -102,7 +102,7 @@ export const SignUpView = () => {
                 <FormItem>
                   <FormLabel className='text-base'>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type='email' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,8 +126,7 @@ export const SignUpView = () => {
               type='submit'
               className='bg-black  text-white hover:bg-pink-400 hover:text-primary'
               variant={'elevated'}
-              size={'lg'}
-            >
+              size={'lg'}>
               Create your store
             </Button>
           </form>
