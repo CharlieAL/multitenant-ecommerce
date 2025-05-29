@@ -48,7 +48,8 @@ export const reviewsRouter = createTRPCRouter({
   create: protectedProcedure.input(createReviewSchema).mutation(async ({ ctx, input }) => {
     const product = await ctx.db.findByID({
       collection: 'products',
-      id: input.productId
+      id: input.productId,
+      disableErrors: true
     })
     if (!product) {
       throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' })
@@ -101,7 +102,8 @@ export const reviewsRouter = createTRPCRouter({
       const existingReview = await ctx.db.findByID({
         depth: 0, // existingReview.user will be User ID
         collection: 'reviews',
-        id: input.reviewId
+        id: input.reviewId,
+        disableErrors: true
       })
       if (!existingReview) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Review not found' })

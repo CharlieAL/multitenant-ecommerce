@@ -52,7 +52,7 @@ export default buildConfig({
       tenantsArrayField: {
         includeDefaultField: true
       },
-      userHasAccessToAllTenants: user => isSuperAdmin(user)
+      userHasAccessToAllTenants: (user) => isSuperAdmin(user)
     })
     // storage-adapter-placeholder
   ]

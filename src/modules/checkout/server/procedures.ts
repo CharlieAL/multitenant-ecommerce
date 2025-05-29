@@ -14,7 +14,8 @@ export const checkoutRouter = createTRPCRouter({
     const user = await ctx.db.findByID({
       collection: 'users',
       id: ctx.session.user.id,
-      depth: 0
+      depth: 0,
+      disableErrors: true
     })
     if (!user) {
       throw new TRPCError({
@@ -81,6 +82,11 @@ export const checkoutRouter = createTRPCRouter({
             {
               'tenant.slug': {
                 equals: input.tenantSlug
+              }
+            },
+            {
+              isArchived: {
+                not_equals: true
               }
             }
           ]
@@ -186,9 +192,18 @@ export const checkoutRouter = createTRPCRouter({
         collection: 'products',
         depth: 1,
         where: {
-          id: {
-            in: input.ids
-          }
+          and: [
+            {
+              id: {
+                in: input.ids
+              }
+            },
+            {
+              isArchived: {
+                not_equals: true
+              }
+            }
+          ]
         }
       })
 

@@ -21,7 +21,6 @@ export const CheckoutItem = ({
   productUrl,
   tenantUrl,
   tenantName,
-  description,
   price,
   onRemove
 }: CheckoutItemProps) => {
@@ -41,17 +40,13 @@ export const CheckoutItem = ({
             <p className='font-medium hover:underline '>{tenantName}</p>
           </Link>
         </div>
-        {description && (
-          <p className='line-clamp-2 text-pretty text-muted-foreground text-base'>{description}</p>
-        )}
       </div>
       <div className='py-4 flex flex-col justify-between'>
         <p className='font-medium'>{formatCurrency(price)}</p>
         <button
           className='font-medium hover:underline cursor-pointer'
           onClick={onRemove}
-          type='button'
-        >
+          type='button'>
           Remove
         </button>
       </div>

@@ -30,7 +30,7 @@ export const ReviewForm = ({ productId, initalData }: ReviewFormProps) => {
         queryClient.invalidateQueries(trpc.reviews.getOne.queryOptions({ productId }))
         setIsPreview(true)
       },
-      onError: error => {
+      onError: (error) => {
         toast.error(error.message)
       }
     })
@@ -42,7 +42,7 @@ export const ReviewForm = ({ productId, initalData }: ReviewFormProps) => {
         queryClient.invalidateQueries(trpc.reviews.getOne.queryOptions({ productId }))
         setIsPreview(true)
       },
-      onError: error => {
+      onError: (error) => {
         toast.error(error.message)
       }
     })
@@ -124,5 +124,22 @@ export const ReviewForm = ({ productId, initalData }: ReviewFormProps) => {
         )}
       </form>
     </Form>
+  )
+}
+
+export const ReviewFormSkeleton = () => {
+  return (
+    <div className='flex flex-col gap-y-4'>
+      <p className='font-medium'>Your rating:</p>
+      <div className='h-6'>
+        <div className='animate-pulse bg-gray-200 h-full w-32 rounded' />
+      </div>
+      <div className='h-32'>
+        <div className='animate-pulse bg-gray-200 h-full w-full rounded' />
+      </div>
+      <div className='h-10 w-32'>
+        <div className='animate-pulse bg-gray-200 h-full w-full rounded' />
+      </div>
+    </div>
   )
 }
