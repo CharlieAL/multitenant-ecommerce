@@ -36,10 +36,10 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       onMutate: () => {
         setStates({ success: false, cancel: false })
       },
-      onSuccess: data => {
+      onSuccess: (data) => {
         window.location.href = data.url
       },
-      onError: error => {
+      onError: (error) => {
         if (error.data?.code === 'UNAUTHORIZED') {
           // TODO: Modify when subdomain enabled
           router.push('/sign-in')
@@ -100,7 +100,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       <div className='grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-16'>
         <div className='lg:col-span-4'>
           <div className='border rounded-md overflow-hidden bg-white divide-y'>
-            {data?.docs.map(product => (
+            {data?.docs.map((product) => (
               <CheckoutItem
                 key={product.id}
                 imageUrl={product.image?.url}

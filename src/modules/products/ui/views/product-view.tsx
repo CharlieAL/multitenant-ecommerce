@@ -16,9 +16,10 @@ import { LinkIcon, StarIcon } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { Progress } from '~/components/ui/progress'
 import { toast } from 'sonner'
-// import { CartButton } from '~/components/cart-button'
+import { Skeleton } from '~/components/ui/skeleton'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
-const CartButton = dynamic(() => import('~/components/cart-button').then(mod => mod.CartButton), {
+const CartButton = dynamic(() => import('~/components/cart-button').then((mod) => mod.CartButton), {
   ssr: false,
   loading: () => (
     <Button disabled variant={'elevated'} className='flex-1 bg-pink-400'>
@@ -92,7 +93,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             </div>
             <div className='p-6 '>
               {data.description ? (
-                <p>{data.description}</p>
+                <RichText data={data.description} />
               ) : (
                 <p className='font-medium text-muted-foreground italic'>No description provider</p>
               )}
@@ -140,13 +141,84 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                   </div>
                 </div>
                 <div className='grid grid-cols-[auto_1fr_auto] gap-3 mt-3'>
-                  {[5, 4, 3, 2, 1].map(star => (
+                  {[5, 4, 3, 2, 1].map((star) => (
                     <Fragment key={star}>
                       <div className='font-medium'>
                         {star} {star === 1 ? 'star' : 'stars'}
                       </div>
                       <Progress value={data.ratingDistribution[star]} className='h-[1lh]' />
                       <div className='font-medium'>{data.ratingDistribution[star]}%</div>
+                    </Fragment>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export const ProductViewSkeleton = () => {
+  return (
+    <div className='px-4 lg:px-12 py-10'>
+      <div className='border rounded-sm bg-white overflow-hidden'>
+        <div className='relative aspect-[3.9] border-b'>
+          <Skeleton className='h-full w-full' />
+        </div>
+        <div className='grid grid-cols-1 lg:grid-cols-6'>
+          <div className='col-span-4'>
+            <div className='p-6'>
+              <Skeleton className='h-10 w-3/4' />
+            </div>
+            <div className='border-y flex'>
+              <div className='px-6 py-4 flex items-center justify-center border-r'>
+                <Skeleton className='h-8 w-24' />
+              </div>
+              <div className='px-6 py-4 flex items-center justify-center lg:border-r'>
+                <div className='flex items-center gap-2'>
+                  <Skeleton className='h-[30px] w-[30px] rounded-full' />
+                  <Skeleton className='h-6 w-32' />
+                </div>
+              </div>
+              <div className='hidden lg:flex px-6 py-4 items-center justify-center'>
+                <div className='flex items-center gap-2'>
+                  <Skeleton className='h-4 w-24' />
+                  <Skeleton className='h-4 w-20' />
+                </div>
+              </div>
+            </div>
+            <div className='flex lg:hidden px-6 py-4 items-center justify-center border-b'>
+              <div className='flex items-center gap-2'>
+                <Skeleton className='h-4 w-24' />
+                <Skeleton className='h-4 w-20' />
+              </div>
+            </div>
+            <div className='p-6'>
+              <Skeleton className='h-20 w-full' />
+            </div>
+          </div>
+          <div className='col-span-2'>
+            <div className='border-t lg:border-t-0 lg:border-l h-full'>
+              <div className='flex flex-col gap-4 p-6 border-b'>
+                <div className='flex flex-wrap items-center gap-2'>
+                  <Skeleton className='h-10 flex-1' />
+                  <Skeleton className='h-12 w-12' />
+                </div>
+                <Skeleton className='h-6 w-full' />
+              </div>
+              <div className='p-6'>
+                <div className='flex items-center justify-between'>
+                  <Skeleton className='h-6 w-24' />
+                  <Skeleton className='h-6 w-20' />
+                </div>
+                <div className='grid grid-cols-[auto_1fr_auto] gap-3 mt-3'>
+                  {[5, 4, 3, 2, 1].map((star) => (
+                    <Fragment key={star}>
+                      <Skeleton className='h-6 w-16' />
+                      <Skeleton className='h-6' />
+                      <Skeleton className='h-6 w-12' />
                     </Fragment>
                   ))}
                 </div>

@@ -44,7 +44,8 @@ export const libraryRouter = createTRPCRouter({
 
       const product = await ctx.db.findByID({
         collection: 'products',
-        id: input.productId
+        id: input.productId,
+        disableErrors: true
       })
 
       if (!product) {
@@ -80,7 +81,7 @@ export const libraryRouter = createTRPCRouter({
         }
       })
 
-      const productsIds = ordersData.docs.map(doc => doc.product)
+      const productsIds = ordersData.docs.map((doc) => doc.product)
 
       const productsData = await ctx.db.find({
         collection: 'products',
@@ -92,7 +93,7 @@ export const libraryRouter = createTRPCRouter({
         }
       })
       const dataWithSummarizedReviews = await Promise.all(
-        productsData.docs.map(async doc => {
+        productsData.docs.map(async (doc) => {
           const reviewsData = await ctx.db.find({
             collection: 'reviews',
             pagination: false,
@@ -116,7 +117,7 @@ export const libraryRouter = createTRPCRouter({
 
       return {
         ...productsData,
-        docs: dataWithSummarizedReviews.map(doc => ({
+        docs: dataWithSummarizedReviews.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null }

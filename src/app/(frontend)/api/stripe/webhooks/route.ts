@@ -44,7 +44,8 @@ export async function POST(req: Request) {
           }
           const user = await payload.findByID({
             collection: 'users',
-            id: data.metadata.userId
+            id: data.metadata.userId,
+            disableErrors: true
           })
           if (!user) {
             throw new Error('Webhook error: User not found')
