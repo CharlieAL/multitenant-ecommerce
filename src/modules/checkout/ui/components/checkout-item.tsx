@@ -10,7 +10,6 @@ interface CheckoutItemProps {
   productUrl: string
   tenantUrl: string
   tenantName?: string
-  description?: string | null
   price: number
   onRemove: () => void
 }

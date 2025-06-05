@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { caller } from '~/trpc/server'
 import { redirect } from 'next/navigation'
 

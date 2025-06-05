@@ -5,16 +5,16 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
 import { Button } from '~/components/ui/button'
 import { InboxIcon } from 'lucide-react'
-import { DEFAULT_PRODUCTS_LIMIT } from '~/constants'
+import { DEFAULT_LIBRARY_LIMIT } from '~/constants'
 import { ProductCard, ProductCardSkeleton } from './product-card'
 
 export const ProductList = () => {
   const trpc = useTRPC()
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
     trpc.library.getMany.infiniteQueryOptions(
-      { limit: DEFAULT_PRODUCTS_LIMIT },
+      { limit: DEFAULT_LIBRARY_LIMIT },
       {
-        getNextPageParam: lastPage => {
+        getNextPageParam: (lastPage) => {
           return lastPage.docs?.length > 0 ? lastPage.nextPage : undefined
         }
       }
@@ -32,8 +32,8 @@ export const ProductList = () => {
     <>
       <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
         {data?.pages
-          .flatMap(page => page.docs)
-          .map(product => (
+          .flatMap((page) => page.docs)
+          .map((product) => (
             <ProductCard
               key={product.id}
               id={product.id}
@@ -63,7 +63,7 @@ export const ProductList = () => {
 export const ProductListSkeleton = () => {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
-      {Array.from({ length: DEFAULT_PRODUCTS_LIMIT }).map((_, i) => {
+      {Array.from({ length: DEFAULT_LIBRARY_LIMIT }).map((_, i) => {
         return <ProductCardSkeleton key={i} />
       })}
     </div>

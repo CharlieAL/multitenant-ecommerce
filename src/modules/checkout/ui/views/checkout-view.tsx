@@ -108,7 +108,6 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
                 productUrl={`${genereteTenantURL(tenantSlug)}/products/${product.id}`}
                 tenantUrl={genereteTenantURL(tenantSlug)}
                 tenantName={product.tenant?.name}
-                description={product?.description}
                 price={product.price}
                 onRemove={() => remove(product.id)}
               />

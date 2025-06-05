@@ -1,7 +1,9 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { LibraryView } from '~/modules/library/ui/views/library-view'
-import { getQueryClient, trpc } from '~/trpc/server'
+export const dynamic = 'force-dynamic'
 
+import { getQueryClient, trpc } from '~/trpc/server'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+
+import { LibraryView } from '~/modules/library/ui/views/library-view'
 import { DEFAULT_LIBRARY_LIMIT } from '~/constants'
 
 const LibraryPage = async () => {
